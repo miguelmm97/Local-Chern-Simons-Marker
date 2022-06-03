@@ -15,7 +15,9 @@ from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, local_mark
 
 Ls = [8, 10, 12]  # System sizes
 Rs = np.arange(4)  # Realisations
-Ws = np.linspace(0, 0.2, 50)
+width1 = np.linspace(0, 0.2, 50)
+width2 = np.linspace(0.2, 0.3, 25)
+Ws = np.append(width1[:-1], width2)
 Ws_string = []
 Ms = [0, 2, 4]
 
@@ -107,7 +109,7 @@ ax.plot(Ws, marker_2[0, :], color=axcolour[0], linestyle=axmarkers[2], linewidth
 # Axis labels and limits
 ax.set_ylabel("$cs$", fontsize=20)
 ax.set_xlabel("$w$", fontsize=20)
-ax.set_xlim(0, 0.2)
+ax.set_xlim(0, 0.3)
 ax.set_ylim(-2.2, 0.2)
 
 # Axis ticks
@@ -180,7 +182,7 @@ ax2.plot(Ws, marker_2[1, :], color=axcolour[0], linestyle=axmarkers[2], linewidt
 # Axis labels and limits
 ax2.set_ylabel("$cs$", fontsize=20)
 ax2.set_xlabel("$w$", fontsize=20)
-ax2.set_xlim(0, 0.2)
+ax2.set_xlim(0, 0.3)
 ax.set_ylim(-0.2, 2.2)
 
 # Axis ticks
@@ -253,7 +255,7 @@ ax3.plot(Ws, marker_2[2, :], color=axcolour[0], linestyle=axmarkers[2], linewidt
 # Axis labels and limits
 ax3.set_ylabel("$cs$", fontsize=20)
 ax3.set_xlabel("$w$", fontsize=20)
-ax3.set_xlim(0, 0.2)
+ax3.set_xlim(0, 0.3)
 ax.set_ylim(-1, 1)
 
 # Axis ticks
