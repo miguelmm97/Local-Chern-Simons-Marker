@@ -13,7 +13,7 @@ from numpy.linalg import eigh
 # Arguments to submit to the cluster
 parser = argparse.ArgumentParser(description='Argument parser for DIII')
 parser.add_argument('-l', '--line', type=int, help='Select line number', default=None)
-parser.add_argument('-f', '--file', type=str, help='Select file name', default='params_t2.txt')
+parser.add_argument('-f', '--file', type=str, help='Select file name', default='params_width.txt')
 parser.add_argument('-M', '--outdir', type=str, help='Select the base name of the output file', default='outdir_width')
 parser.add_argument('-o', '--outbase', type=str, help='Select the base name of the output file', default='out_width')
 args = parser.parse_args()
