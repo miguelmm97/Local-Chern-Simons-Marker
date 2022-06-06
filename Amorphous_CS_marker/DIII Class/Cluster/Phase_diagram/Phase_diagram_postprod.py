@@ -116,22 +116,24 @@ normalize = mcolors.Normalize()
 
 plt.figure(1)
 plt.scatter(width_matrix, mass_matrix, c=marker, marker='s', cmap=colormap1,  linewidths=2.5)
-plt.colorbar(label=r'$\nu$')
+contours = plt.contour(Ws, Ms, gap.T, levels=[0.2], colors="black")
+plt.clabel(contours, inline=True, fontsize=12, fmt="$E_g \sim 0$")
+#plt.colorbar(label=r'$\nu$')
 
 # for i in range(len(Ms)):
 #     for j in range(len(Ws)):
 #         if Ws[j] < 0.09:
 #             if gap_closing[j, i] == 1:
 #                 if dgap[j, i] == 1:
-#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='^', linewidths=0.01)
+#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='.', linewidths=0.01)
 #                 elif dgap[j, i] == -1:
-#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='v', linewidths=0.01)
+#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='.', linewidths=0.01)
 #         else:
 #             if gap_closing[j, i] == 1:
 #                 if dgap1[j, i] == 1:
-#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='^', linewidths=0.01)
+#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='.', linewidths=0.01)
 #                 elif dgap1[j, i] == -1:
-#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='v', linewidths=0.01)
+#                     plt.scatter(Ws[j], Ms[i], c="Black", marker='.', linewidths=0.01)
 
 #
 # for i in range(len(Ms)):
