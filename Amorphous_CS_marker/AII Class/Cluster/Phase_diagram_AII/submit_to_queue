@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#SBATCH --job-name=phase_diagram_AII   # Job name for this simulation, to display on the queue
+#SBATCH --time=6-00:00:00               # Maximum duration of each array task. Slurm kills the task after this time
+#SBATCH --nodes=1                       # Minimum number of nodes required for a single task (default 1)
+#SBATCH --ntasks=1                      # Number of tasks (simulations) in each array element (default 1)
+#SBATCH --ntasks-per-core=1             # Number of tasks allowed in each core at the same time
+#SBATCH --cpus-per-task=8               # In this case each task (simulation) is single-threaded (default 1)
+#SBATCH --mem-per-cpu=1G                # Amount of RAM memory (in megabytes) required for each core
+
+#SBATCH --cluster=kraken                # Comma-separated list of clusters to consider for this job
+#SBATCH --output=logs/%x_%N_%a.o.txt    # Normal console output. Expands to example03A_<nodename>_<[1-512]>.o
+#SBATCH --error=logs/%x_%N_%a.e.txt     # Error  console output. Expands to example03A_<nodename>_<[1-512]>.e
+#SBATCH --array=17600-19599             # Range of array tasks, i.e. task 1, task 2, task 3, ...task 512
+
+
+
+# This line is run on the allocated resource
+echo "starting job"
+export OMP_NUM_THREADS=$((SLURM_CPUS_PER_TASK / 2))
+python Phase_diagram_AII.py --line=$SLURM_ARRAY_TASK_ID 
+echo "finished job"
+
+ 
