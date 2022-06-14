@@ -18,8 +18,7 @@ Ws_string = []
 with open('width_values.txt', 'r') as f:
     for i, line in enumerate(f.readlines()):
         params = line.split()
-        Ws_string.append(params[1])
-print(Ws_string)
+        Ws_string.append(params[0])
 
 local_marker0 = np.zeros((len(Ws), len(Rs)))
 local_marker1 = np.zeros((len(Ws), len(Rs)))
@@ -30,7 +29,7 @@ for file in os.listdir('outdir_width'):
 
     if file.endswith('h5'):
 
-        file_path = os.path.join("outdir_t2", file)
+        file_path = os.path.join("outdir_width", file)
 
         with h5py.File(file_path, 'r') as f:
 
@@ -43,11 +42,11 @@ for file in os.listdir('outdir_width'):
             R = datanode.attrs['R']
             row, col = Ws_string.index(w_string), R
 
-            if Ls == 8:
+            if size == 8:
                 local_marker0[row, col] = value
-            elif Ls == 10:
+            elif size == 10:
                 local_marker1[row, col] = value
-            else:
+            elif size == 12:
                 local_marker2[row, col] = value
 
 
@@ -57,7 +56,10 @@ for file in os.listdir('outdir_width'):
 
 marker0 = np.mean(local_marker0, axis=1)
 marker1 = np.mean(local_marker1, axis=1)
+print(marker1)
 marker2 = np.mean(local_marker2, axis=1)
+print("---------")
+print(marker2)
 
 
 std0 = np.std(local_marker0, axis=1) / np.sqrt(len(Rs))
@@ -106,11 +108,10 @@ ax.xaxis.set_minor_locator(ticker.FixedLocator(minorsx))
 
 # Legend and inset text
 ax.legend(loc='upper right', frameon=False, fontsize=20)
-ax.text(1.5, 0.5, " $M=$" + str(M), fontsize=20)
-ax.text(1.5, 0.4," $S= -\sigma_0 \otimes \sigma_y$", fontsize=20)
+# ax.text(1.5, 0.5, " $M=$" + str(M), fontsize=20)
+# ax.text(1.5, 0.4," $S= -\sigma_0 \otimes \sigma_y$", fontsize=20)
 # ax.text(-4.5, -1.5, " $N=$" + str(n_realisations), fontsize=20)
 
-plt.tight_layout()
 # plt.title(" $N_{\\rm{samples}}=$" + str(n_realisations) + " $w=$" + str(width),fontsize=20)
 plt.show()
 plt.savefig("try1.pdf", bbox_inches="tight")
