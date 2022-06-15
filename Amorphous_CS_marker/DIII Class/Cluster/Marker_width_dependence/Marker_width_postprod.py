@@ -87,6 +87,37 @@ std_gap_1 = np.std(gap_1, axis=2)
 std_gap_2 = np.std(gap_2, axis=2)
 
 
+
+# Output data
+file_name = "Marker_width_8_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (2, len(Ws)), data=marker_0[0:-1, :])
+
+file_name = "Marker_width_10_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (2, len(Ws)), data=marker_1[0:-1, :])
+
+file_name = "Marker_width_12_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (2, len(Ws)), data=marker_2[0:-1, :])
+
+file_name = "Marker_width_8_gap_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (2, len(Ws)), data=gap_mean_0[0:-1, :])
+
+file_name = "Marker_width_10_gap_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (2, len(Ws)), data=gap_mean_1[0:-1, :])
+
+file_name = "Marker_width_12_gap_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (2, len(Ws)), data=gap_mean_2[0:-1, :])
+
+file_name = "Marker_width_Xaxis_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (len(Ws), ), data=Ws)
+
+
 # %% Plots
 
 # Font format
