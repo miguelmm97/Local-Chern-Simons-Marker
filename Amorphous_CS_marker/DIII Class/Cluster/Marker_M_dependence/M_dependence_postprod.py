@@ -14,10 +14,16 @@ import h5py
 from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, local_marker_DIII, spectrum
 
 Ls = [8, 10, 12]  # System sizes
-Ms = np.linspace(-4, 4, 50)  # Mass parameter
+Ms = np.linspace(-5, 5, 50)  # Mass parameter
 Rs = np.arange(100)  # Realisations
 Ms_inset = [0, 2, 4]
+Ms_string = []
 
+
+with open('M_values.txt', 'r') as f:
+    for i, line in enumerate(f.readlines()):
+        params = line.split()
+        Ms_string.append(params[0])
 
 local_marker_0 = np.zeros((len(Ms), len(Rs)))
 local_marker_1 = np.zeros((len(Ms), len(Rs)))
@@ -26,9 +32,13 @@ site_marker_0 = np.zeros((12,))
 site_marker_1 = np.zeros((12,))
 site_marker_2 = np.zeros((12,))
 
-for file in os.listdir('.'):
+for file in os.listdir('outdir_M_simulation1'):
+
     if file.endswith('h5'):
-        with h5py.File(file, 'r') as f:
+
+        file_path = os.path.join('outdir_M_simulation1', file)
+
+        with h5py.File(file_path, 'r') as f:
 
             datanode = f['data']
             value = datanode[()]
@@ -36,17 +46,18 @@ for file in os.listdir('.'):
             M = datanode.attrs['M']
             R = datanode.attrs['R']
             width = datanode.attrs['width']
+            m_string = '{:.4f}'.format(M)
 
             if size == Ls[0]:
-                row, col = np.where(Ms == M), R
+                row, col = Ms_string.index(m_string), R
                 local_marker_0[row, col] = value
 
             if size == Ls[1]:
-                row, col = np.where(Ms == M), R
+                row, col = Ms_string.index(m_string), R
                 local_marker_1[row, col] = value
 
             if size == Ls[2]:
-                row, col = np.where(Ms == M), R
+                row, col = Ms_string.index(m_string), R
                 local_marker_2[row, col] = value
 
 
@@ -69,6 +80,15 @@ std_2 = np.std(local_marker_2, axis=1)
 site_marker_0 = site_marker_0 / len(Rs)
 site_marker_1 = site_marker_1 / len(Rs)
 site_marker_2 = site_marker_2 / len(Rs)
+
+
+# Output data
+file_name = "Marker_M_results.h5"
+with h5py.File(file_name, 'w') as f:
+
+    data=[[marker_0], [marker_1], [marker_2]]
+    f.create_dataset("data", (3, len(Ms)), data=data)
+
 
 # %% Plots
 
@@ -106,7 +126,7 @@ ax.xaxis.set_minor_locator(ticker.FixedLocator(minorsx))
 
 # Legend and inset text
 ax.legend(loc='upper right', frameon=False)
-ax.text(-3.5, -1.75, " $w=$" + str(width), fontsize=20)
+# ax.text(-3.5, -1.75, " $w=$" + str(width), fontsize=20)
 ax.text(-3.5, -2, " $N_{\\rm{samples}}=$" + str(len(Rs)), fontsize=20)
 
 plt.tight_layout()
@@ -149,6 +169,6 @@ inset_ax.xaxis.set_minor_locator(ticker.FixedLocator(minorsx2))
 
 # Legend
 inset_ax.legend(loc=(0, 0.9), mode="expand", ncol=3, frameon=False)
-
+plt.savefig("try1.pdf", bbox_inches="tight")
 plt.show()
 
