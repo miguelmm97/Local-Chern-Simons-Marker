@@ -63,6 +63,17 @@ tol2 = 0.5
 marker = np.mean(local_marker, axis=2)
 gap = np.mean(gap, axis=2)
 print(marker[0, :])
+
+# Output data
+file_name = "Phase_diagram_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", marker.shape, data=marker)
+
+file_name = "Phase_diagram_gap.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", gap.shape, data=gap)
+
+
 # gap_closing, gap_closing1, gap_closing2 = np.zeros((len(Ws), len(Ms))), np.zeros((len(Ws), len(Ms))), np.zeros((len(Ws), len(Ms)))
 # gap_closing1[(tol1 < gap)] = 1
 # gap_closing2[( gap < tol2)] = 1
