@@ -115,6 +115,9 @@ gap_closing = gap_closing1 * gap_closing2
 width_matrix = np.repeat(Ws, len(Ms))
 mass_matrix = np.tile(Ms, len(Ws))
 
+print(width_matrix.shape)
+print(mass_matrix.shape)
+
 file_name = "Phase_diagram_mesh_x.h5"
 with h5py.File(file_name, 'w') as f:
     f.create_dataset("data", width_matrix.shape, data=width_matrix)
@@ -122,6 +125,14 @@ with h5py.File(file_name, 'w') as f:
 file_name = "Phase_diagram_mesh_y.h5"
 with h5py.File(file_name, 'w') as f:
     f.create_dataset("data", mass_matrix.shape, data=mass_matrix)
+
+    file_name = "Phase_diagram_gap_x.h5"
+    with h5py.File(file_name, 'w') as f:
+        f.create_dataset("data", Ws.shape, data=Ws)
+
+    file_name = "Phase_diagram_gap_y.h5"
+    with h5py.File(file_name, 'w') as f:
+        f.create_dataset("data", Ms.shape, data=Ms)
 
 
 # Font format
