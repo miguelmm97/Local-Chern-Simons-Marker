@@ -7,7 +7,7 @@ Ms = np.linspace(-3.5, 3.5, 70)  # Mass parameter
 width1 = np.linspace(0, 0.2, 50)
 width2 = np.linspace(0.2, 0.3, 25)
 Ws = np.append(width1[:-1], width2)
-Rs = np.arange(4)  # Realisations
+Rs = np.arange(1)  # Realisations
 Ms_inset = [0, 2, 4]
 Ms_width = [0, 2, 4]
 

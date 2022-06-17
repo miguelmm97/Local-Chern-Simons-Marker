@@ -15,7 +15,7 @@ from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, local_mark
 
 Ls = [8, 10, 12]  # System sizes
 Ms = np.linspace(-5, 5, 50)  # Mass parameter
-Rs = np.arange(100)  # Realisations
+Rs = np.arange(1)  # Realisations
 Ms_inset = [0, 2, 4]
 Ms_string = []
 
@@ -88,6 +88,22 @@ with h5py.File(file_name, 'w') as f:
 
     data=[[marker_0], [marker_1], [marker_2]]
     f.create_dataset("data", (3, len(Ms)), data=data)
+
+file_name = "Marker_M_Xaxis_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (len(Ms), ), data=Ms)
+    
+file_name = "Marker_M_inset_M0.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", site_marker_0.shape, data=site_marker_0)
+    
+file_name = "Marker_M_inset_M2.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", site_marker_1.shape, data=site_marker_1)
+    
+file_name = "Marker_M_inset_M4.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", site_marker_2.shape, data=site_marker_2)
 
 
 # %% Plots
