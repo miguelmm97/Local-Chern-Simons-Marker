@@ -66,7 +66,21 @@ std0 = np.std(local_marker0, axis=1) / np.sqrt(len(Rs))
 std1 = np.std(local_marker1, axis=1) / np.sqrt(len(Rs))
 std2 = np.std(local_marker2, axis=1) / np.sqrt(len(Rs))
 
+file_name = "Marker_width_8_AII_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", marker0.shape, data=marker0)
 
+file_name = "Marker_width_10_AII_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", marker1.shape, data=marker1)
+
+file_name = "Marker_width_12_AII_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", marker2.shape, data=marker2)
+
+file_name = "Marker_width_Xaxis_AII_results.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", (len(Ws), ), data=Ws)
 
 # %% Plots
 
