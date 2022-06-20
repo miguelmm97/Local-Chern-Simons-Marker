@@ -92,11 +92,23 @@ for file in os.listdir(outdir):
             datanode = f['data']
             pd_gap_y = datanode[()]
 
+    if file == "Marker_M_inset_M0.h5":
+        with h5py.File(file, 'r') as f:
+            datanode = f['data']
+            M_inset_0 = datanode[()]
 
-M_inset_0 =np.zeros((12,))
-M_inset_2 =np.zeros((12,))
-M_inset_4 =np.zeros((12,))
-M_inset_xaxis =np.zeros((12,))
+    if file == "Marker_M_inset_M2.h5":
+        with h5py.File(file, 'r') as f:
+            datanode = f['data']
+            M_inset_2 = datanode[()]
+
+    if file == "Marker_M_inset_M4.h5":
+        with h5py.File(file, 'r') as f:
+            datanode = f['data']
+            M_inset_4 = datanode[()]
+
+
+M_inset_xaxis =np.arange(1, 13)
 
 
 #%% FIgure grid
@@ -169,8 +181,8 @@ right_ax.yaxis.set_minor_locator(ticker.FixedLocator(minorsy))
 # Legend and inset text
 ax1.legend(loc=(0.45, 0.8), ncol=2, columnspacing=1.0, frameon=False, fontsize=30)
 right_ax.legend(loc=(0.45, 0.73), ncol=2, columnspacing=0.8, frameon=False, fontsize=30)
-ax1.text(0.15, 1.6, "$M=0$", fontsize=30)
-ax1.text(0.23, 1.6, "$M=2$", fontsize=30)
+ax1.text(0.14, 1.6, "$M=0$", fontsize=30)
+ax1.text(0.22, 1.6, "$M=2$", fontsize=30)
 
 box = ax1.get_position()
 box.x0 = box.x0 - 0.015
@@ -221,7 +233,7 @@ ax2.legend(loc=(0.6, 0.24), frameon=False, fontsize=30)
 # Inset figure
 # Placement and inset
 # left, bottom, width, height = [0.72, 0.27, 0.24, 0.26]
-left, bottom, width, height = [0.08, 0.23, 0.3, 0.26]
+left, bottom, width, height = [0.08, 0.23, 0.3, 0.3]
 inset_ax = inset_axes(ax2, height="100%", width="100%", bbox_to_anchor = [left, bottom, width, height], bbox_transform = ax2.transAxes, loc = 3 ) # [left, bottom, width, height])
 #insetcolour = ['#BF7F04', '#BF5B05', '#8C1C04'] # dark
 insetcolour = ['#6668FF', '#FFC04D','#FF7D66'] # light
@@ -229,34 +241,36 @@ insetcolour = ['#6668FF', '#FFC04D','#FF7D66'] # light
 inset_ax.plot(M_inset_xaxis, M_inset_0, color=insetcolour[0], marker='.', markersize=8, label='$M=0$')
 inset_ax.plot(M_inset_xaxis, M_inset_2, color=insetcolour[1], marker='.', markersize=8, label='$M=2$')
 inset_ax.plot(M_inset_xaxis, M_inset_4, color=insetcolour[2], marker='.', markersize=8, label='$M=4$')
+inset_ax.plot(M_inset_xaxis,np.repeat(1, 12), color=insetcolour[1], linestyle="dashed")
+inset_ax.plot(M_inset_xaxis,np.repeat(-2, 12), color=insetcolour[0], linestyle="dashed")
 
 # Axis labels and limits
 inset_ax.set_ylabel("$\\nu$", fontsize=30)
 inset_ax.set_xlabel("$n$", fontsize=30)
-inset_ax.set_xlim(0, 11)
-inset_ax.set_ylim(-2.5, 2)
+inset_ax.set_xlim(1, 12)
+inset_ax.set_ylim(-3, 3)
 
 # Axis labels
-inset_ax.xaxis.set_label_coords(0.5, -0.2)
-inset_ax.yaxis.set_label_coords(-0.175, 0.5)
+inset_ax.xaxis.set_label_coords(0.5, -0.05)
+inset_ax.yaxis.set_label_coords(-0.13, 0.5)
 # Axis ticks
 inset_ax.tick_params(which='major', width=0.75, labelsize=15)
 inset_ax.tick_params(which='major', length=7, labelsize=15)
 inset_ax.tick_params(which='minor', width=0.75)
 inset_ax.tick_params(which='minor', length=3.5)
-majorsy2 = [-2, -1, 0, 1, 2]
-# minorsy2 = [-2.2, -1.5, -0.5, 0.5, 1.2]
-majorsx2 = [0, 5.5, 11]
-minorsx2 = [2.75, 8.25]
+majorsy2 = [-3, -1, 1, 3]
+minorsy2 = [-2, 0, 2]
+majorsx2 = [1, 12]
+minorsx2 = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 inset_ax.yaxis.set_major_locator(ticker.FixedLocator(majorsy2))
-# inset_ax.yaxis.set_minor_locator(ticker.FixedLocator(minorsy2))
+inset_ax.yaxis.set_minor_locator(ticker.FixedLocator(minorsy2))
 inset_ax.xaxis.set_major_locator(ticker.FixedLocator(majorsx2))
 inset_ax.xaxis.set_minor_locator(ticker.FixedLocator(minorsx2))
 
 # Legend
-inset_ax.text(0.05, 1.2, " $M=2$", fontsize=15)
-inset_ax.text(0.05, -1.8, " $M=0$", fontsize=15)
-inset_ax.text(0.05, 0.2, " $M=4$", fontsize=15)
+inset_ax.text(1.1, 1.6, " $M=2$", fontsize=15)
+inset_ax.text(1.1, -1.4, " $M=0$", fontsize=15)
+inset_ax.text(1.1, 0.2, " $M=4$", fontsize=15)
 
 
 
@@ -275,20 +289,20 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
 colormap1 = plt.get_cmap('coolwarm')
-new_cmap = colormap1 # truncate_colormap(colormap1, 0, 0.75)
+new_cmap = truncate_colormap(colormap1, 0, 0.75)
 
 
 # Phase diagram
 # fig, ax = plt.subplots(figsize=(8, 6))
 scatters = ax3.scatter(pd_mesh_x, pd_mesh_y, c=phase_diagram, marker='s', cmap=new_cmap,  linewidths=2.5)
 cbar = plt.colorbar(scatters, ax=ax3)
-contours = ax3.contour(pd_gap_x, pd_gap_y, pd_gap.T, levels=[0.2], colors="black")
-ax3.clabel(contours, inline=True, fontsize=18, fmt="$E_g \sim 0$")
+contours = ax3.contour(pd_gap_x, pd_gap_y, pd_gap.T, levels=[0.2], colors="black", linewidths=3.5)
+# ax3.clabel(contours, inline=True, fontsize=22, inline_spacing=20, fmt="$\\Delta = 0.2 \hspace{2mm}$ ")
 
 # Colorbar format
-cbar.set_label(label='$\\nu$', size=35)
+cbar.set_label(label='$\\nu$', size=35, labelpad=-15, y=0.5)
 # cbar.set_label_coords(0.075, 0.5)
-cbar.ax.tick_params(labelsize=12)
+cbar.ax.tick_params(labelsize=25)
 cbar.set_ticks([-2, -1, 0, 1, 2])
 cbar.set_ticklabels([-2, -1, 0, 1, 2])
 
@@ -297,7 +311,7 @@ ax3.set_ylabel("$M$", fontsize=35)
 ax3.set_xlabel("$w$", fontsize=35)
 ax3.set_xlim(0, 0.3)
 ax3.set_ylim(-3.5, 3.5)
-ax3.yaxis.set_label_coords(-0.075, 0.5)
+ax3.yaxis.set_label_coords(-0.09, 0.5)
 
 # Axis ticks
 ax3.tick_params(which='major', width=0.75)
