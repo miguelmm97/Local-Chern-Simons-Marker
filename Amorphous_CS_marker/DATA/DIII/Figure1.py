@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import matplotlib.ticker as ticker
+from colorbar_functions import hex_to_rgb, rgb_to_dec,get_continuous_cmap #import functions for colormap
 import os
 import h5py
 
@@ -269,18 +270,27 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
 # Colormap
-def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-    new_cmap = mcolors.LinearSegmentedColormap.from_list(
-        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
-        cmap(np.linspace(minval, maxval, n)))
-    return new_cmap
-colormap1 = plt.get_cmap('coolwarm')
-new_cmap = colormap1 # truncate_colormap(colormap1, 0, 0.75)
+#def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
+#    new_cmap = mcolors.LinearSegmentedColormap.from_list(
+#        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+#        cmap(np.linspace(minval, maxval, n)))
+#    return new_cmap
+#colormap1 = plt.get_cmap('coolwarm')
+#new_cmap = colormap1 # truncate_colormap(colormap1, 0, 0.75)
+
+#New colormap
+
+divnorm = mcolors.TwoSlopeNorm(vmin=-2,vcenter=0, vmax=1)
+hex_list = ['#ff416d', '#ff7192', '#ffa0b6', '#ffd0db', '#ffffff', '#cfdaff', '#9fb6ff', '#6f91ff', '#3f6cff']
+#hex_list = ['#3f6cff', '#6f91ff', '#9fb6ff', '#cfdaff', '#ffffff', '#ffd0db', '#ffa0b6', '#ff7192', '#ff416d']
+#hex_list = ['#3f6cff', '#8389fe', '#ad9ff7', '#ccabeb', '#e4aeda', '#f6a7c4', '#ff94aa', '#ff758d', '#ff416d']
+#hex_list = ['#ff416d', '#ff758d', '#ff94aa', '#f6a7c4', '#e4aeda', '#ccabeb', '#ad9ff7', '#8389fe', '#3f6cff']
 
 
 # Phase diagram
 # fig, ax = plt.subplots(figsize=(8, 6))
-scatters = ax3.scatter(pd_mesh_x, pd_mesh_y, c=phase_diagram, marker='s', cmap=new_cmap,  linewidths=2.5)
+scatters = ax3.scatter(pd_mesh_x, pd_mesh_y, c=phase_diagram, marker='s',norm=divnorm, cmap = get_continuous_cmap(hex_list),  linewidths=2.5)
+#scatters = ax3.scatter(pd_mesh_x, pd_mesh_y, c=phase_diagram, marker='s', cmap=new_cmap,  linewidths=2.5)
 cbar = plt.colorbar(scatters, ax=ax3)
 contours = ax3.contour(pd_gap_x, pd_gap_y, pd_gap.T, levels=[0.2], colors="black")
 ax3.clabel(contours, inline=True, fontsize=18, fmt="$E_g \sim 0$")
