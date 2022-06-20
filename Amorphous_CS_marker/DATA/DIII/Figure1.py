@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
+from colorbar_functions import hex_to_rgb, rgb_to_dec,get_continuous_cmap #import functions for colormap
 import matplotlib.ticker as ticker
 from colorbar_functions import hex_to_rgb, rgb_to_dec,get_continuous_cmap #import functions for colormap
 import os
@@ -285,13 +286,6 @@ plt.rc('font', family='serif')
 
 # Colormap
 
-#def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-#    new_cmap = mcolors.LinearSegmentedColormap.from_list(
-#        'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
-#        cmap(np.linspace(minval, maxval, n)))
-#    return new_cmap
-#colormap1 = plt.get_cmap('coolwarm')
-#new_cmap = colormap1 # truncate_colormap(colormap1, 0, 0.75)
 
 #New colormap
 
@@ -350,14 +344,4 @@ ax3.xaxis.set_minor_locator(ticker.FixedLocator(minorsx))
 # plt.tight_layout()
 plt.savefig("try2.pdf", bbox_inches="tight")
 plt.show()
-
-
-
-
-
-
-
-
-
-
 
