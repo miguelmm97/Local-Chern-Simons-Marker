@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 from numpy.linalg import eigh
 from numpy import pi
 from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, spectrum, displacement
-
+import os
+import h5py
 
 start_time = time.time()
 # %%  Global definitions
@@ -14,13 +15,13 @@ start_time = time.time()
 # Parameters of the model
 n_orb = 4                          # Number of orbitals per site
 n_neighbours = 6                   # Number of neighbours
-width = 0.025                      # Width of the gaussian for the WT model
+width = 0.05                       # Width of the gaussian for the WT model
 density = 1                        # Point density of the RPS model
 M = 2                              # Vector of mass parameters in units of t1
 t1, lamb = 1, 1                    # Hopping and spin-orbit coupling in WT model
-t2 = np.linspace(0, 2, 50)         # Chiral symmetry breaking
+t2 = np.linspace(0, 2, 100)         # Chiral symmetry breaking
 mu = 0                             # Disorder strength
-size = 8                           # System size
+size = 10                           # System size
 
 # Pauli matrices
 sigma_0 = np.eye(2)                      # Pauli 0
@@ -74,7 +75,7 @@ Q1r = np.zeros([len(t2), ] , complex)       # Declaration of Q(r-r')
 # Lattice, trivial Projector and chiral symmetry
 x_am, y_am, z_am = GaussianPointSet_3D(x, y, z, width)  # Positions of the sites in the amorphous lattice
 R = np.zeros((n_states, n_states), complex)             # Matrix for the trivial projector
-S = -np.kron(sigma_0, tau_y)                            # Chiral symmetry operator for the DIII class
+S = np.kron(sigma_0, tau_y)                            # Chiral symmetry operator for the DIII class
 for index in range(0, n_sites):
     R[index * n_orb: index * n_orb + n_orb, index * n_orb: index * n_orb + n_orb] = 0.5 * (np.eye(4) - S)
 
@@ -113,6 +114,21 @@ for i, t in enumerate(t2):
     gap_H[i] = energy_PBC[int(n_states / 2)] - energy_PBC[int(n_states / 2) - 1]  # Gap spectrum
     gap_PR[i] = vals[int(n_states / 2)] - vals[int(n_states / 2) - 1]             # Gap i[P, R]
     loc_length[i] = 100 * Q1r[i]                                                  # Scaled localisation parameter
+
+
+file_name = "Egap_t2.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", gap_H.shape, data=gap_H)
+
+file_name = "Qgap_t2.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", gap_PR.shape, data=gap_PR)
+
+file_name = "gap_t2_xaxis.h5"
+with h5py.File(file_name, 'w') as f:
+    f.create_dataset("data", t2.shape, data=t2)
+
+
 
 
 # Plots
