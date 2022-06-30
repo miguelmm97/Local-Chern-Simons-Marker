@@ -21,7 +21,7 @@ M = 2                              # Vector of mass parameters in units of t1
 t1, lamb = 1, 1                    # Hopping and spin-orbit coupling in WT model
 t2 = np.linspace(0, 2, 100)         # Chiral symmetry breaking
 mu = 0                             # Disorder strength
-size = 10                           # System size
+size = 12                           # System size
 
 # Pauli matrices
 sigma_0 = np.eye(2)                      # Pauli 0
@@ -75,7 +75,7 @@ Q1r = np.zeros([len(t2), ] , complex)       # Declaration of Q(r-r')
 # Lattice, trivial Projector and chiral symmetry
 x_am, y_am, z_am = GaussianPointSet_3D(x, y, z, width)  # Positions of the sites in the amorphous lattice
 R = np.zeros((n_states, n_states), complex)             # Matrix for the trivial projector
-S = np.kron(sigma_0, tau_y)                            # Chiral symmetry operator for the DIII class
+S = -np.kron(sigma_0, tau_y)                            # Chiral symmetry operator for the DIII class
 for index in range(0, n_sites):
     R[index * n_orb: index * n_orb + n_orb, index * n_orb: index * n_orb + n_orb] = 0.5 * (np.eye(4) - S)
 

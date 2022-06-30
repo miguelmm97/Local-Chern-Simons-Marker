@@ -90,7 +90,7 @@ def lattice(size, n_orb, particles=None, chiral_symmetry=None, time_reversal=Non
 # Underlying crystalline lattice
 lattice(size, n_orb, chiral_symmetry=s)                # Crystalline lattice definition, symmetries, ... etc
 x, y, z = GaussianPointSet_3D(x, y, z, width)          # Positions of the sites in the amorphous lattice
-sample_sites = 20                                      # Number of sites we want to take the average over
+sample_sites = 25                                      # Number of sites we want to take the average over
 list_sites = sample(range(0, n_sites), sample_sites)   # Select the sites we want to calculate the marker on
 marker = np.zeros((sample_sites,))                     # Declaration of the local marker
 
@@ -106,7 +106,7 @@ for site in range(len(list_sites)):
     marker[site] = local_marker_DIII(n_orb, L_x, L_y, L_z, x, y, z, P, S, list_sites[site])
 marker_average = np.mean(marker)
 
-extra_line = args.line + 3470
+extra_line = args.line + 4369
 
 # Output data
 outfile1 = '{}-{}'.format(args.outbase, extra_line)

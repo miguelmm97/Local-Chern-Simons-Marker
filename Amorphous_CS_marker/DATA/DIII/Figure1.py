@@ -128,7 +128,7 @@ fig.subplots_adjust(left=0.04, bottom=0.15, right=1, top=0.95, wspace=0.3, hspac
 
 # Marker
 # fig1, ax1 = plt.subplots(figsize=(8, 6))
-axcolour = ['#FF416D','#6668FF']
+axcolour = ['#ff416d','#3f6cff']
 axmarkers = ['dashed', 'dotted', 'solid']
 # ax.plot(Marker_width_xaxis, marker_width_8_M0, color='axcolour', linestyle=axmarkers[0], linewidth=2, label='$L=8$')
 # ax.plot(Marker_width_xaxis, marker_width_10_M0, color='k', linestyle=axmarkers[1], linewidth=2, label='$L=10$')
@@ -184,7 +184,7 @@ ax1.legend(loc=(0.45, 0.8), ncol=2, columnspacing=1.0, frameon=False, fontsize=3
 right_ax.legend(loc=(0.45, 0.73), ncol=2, columnspacing=0.8, frameon=False, fontsize=30)
 ax1.text(0.14, 1.6, "$M=0$", fontsize=30)
 ax1.text(0.22, 1.6, "$M=2$", fontsize=30)
-ax2.text(5.6, 1.1, "(b)", fontsize=35)
+ax2.text(5.6, 1, "(b)", fontsize=35)
 
 box = ax1.get_position()
 box.x0 = box.x0 - 0.015
@@ -229,7 +229,7 @@ ax2.xaxis.set_minor_locator(ticker.FixedLocator(minorsx))
 
 # Legend and inset text
 ax2.legend(loc=(0.6, 0.24), frameon=False, fontsize=30)
-ax2.text(-6.4, 1.1, "(a)", fontsize=35)
+ax2.text(-6.5, 1, "(a)", fontsize=35)
 
 
 # Inset figure
@@ -317,7 +317,7 @@ hex_list = ['#ff416d', '#ff7192', '#ffa0b6', '#ffd0db', '#ffffff', '#cfdaff', '#
 scatters = ax3.scatter(pd_mesh_x, pd_mesh_y, c=phase_diagram, marker='s',norm=divnorm, cmap = get_continuous_cmap(hex_list),  linewidths=2.5)
 #scatters = ax3.scatter(pd_mesh_x, pd_mesh_y, c=phase_diagram, marker='s', cmap=new_cmap,  linewidths=2.5)
 cbar = plt.colorbar(scatters, ax=ax3)
-contours = ax3.contour(pd_gap_x, pd_gap_y, pd_gap.T, levels=[0.2], colors="black", linewidths=3.5)
+contours = ax3.contour(pd_gap_x, pd_gap_y, pd_gap.T, levels=[0.12], colors="black", linewidths=3.5)
 # ax3.clabel(contours, inline=True, fontsize=22, inline_spacing=20, fmt="$\\Delta = 0.2 \hspace{2mm}$ ")
 
 # Colorbar format
@@ -347,7 +347,7 @@ ax3.yaxis.set_major_locator(ticker.FixedLocator(majorsy))
 ax3.yaxis.set_minor_locator(ticker.FixedLocator(minorsy))
 ax3.xaxis.set_major_locator(ticker.FixedLocator(majorsx))
 ax3.xaxis.set_minor_locator(ticker.FixedLocator(minorsx))
-ax2.text(19.4, 1.1, "(c)", fontsize=35)
+ax2.text(19.4, 1, "(c)", fontsize=35)
 
 # plt.tight_layout()
 plt.savefig("try2.pdf", bbox_inches="tight")
