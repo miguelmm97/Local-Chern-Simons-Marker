@@ -4,12 +4,10 @@ import h5py
 
 Ls = [12]  # System sizes
 Ms = np.linspace(-3.5, 3.5, 70)  # Mass parameter
-width1 = np.linspace(0, 0.2, 50)
-width2 = np.linspace(0.2, 0.3, 25)
-Ws = np.append(width1[:-1], width2)
-Rs = np.arange(2)  # Realisations
+Ws = np.linspace(0, 0.3, 75)
+Rs = np.arange(10)  # Realisations
 Ms_inset = [0, 2, 4]
-Ms_width = [0]
+Ms_width = [0, 2]
 
 
 # with h5py.File('params_M.h5', 'w') as f:
