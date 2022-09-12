@@ -23,7 +23,7 @@ def rgb_to_dec(value):
 def get_continuous_cmap(hex_list, float_list=None):
     ''' creates and returns a color map that can be used in heat map figures.
         If float_list is not provided, colour map graduates linearly between each color in hex_list.
-        If float_list is provided, each color in hex_list is mapped to the respective location in float_list.
+        If float_list is provided, each color in hex_list is mapped to the respective location in float_list. 
 
         Parameters
         ----------
@@ -44,4 +44,4 @@ def get_continuous_cmap(hex_list, float_list=None):
         col_list = [[float_list[i], rgb_list[i][num], rgb_list[i][num]] for i in range(len(float_list))]
         cdict[col] = col_list
     cmp = mcolors.LinearSegmentedColormap('my_cmp', segmentdata=cdict, N=256)
-    return cmp
+    return cmp  
