@@ -247,7 +247,6 @@ def AmorphousHamiltonian3D_WT(n_sites, n_orb, n_neighbours, L_x, L_y, L_z, x, y,
 
     return Hamiltonian, matrix_neighbours
 
-
 def local_marker_DIII(n_orb, L_x, L_y, L_z, x, y, z, P, S, site):
     
     # Calculates the local CS marker for the specified site
@@ -345,6 +344,33 @@ def local_marker_AII(n_orb, L_x, L_y, L_z, x, y, z, P, Q, R, site):
 
     marker = marker_AII  # + marker_DIII # Total marker
 
+    return marker
+
+
+def local_marker_DIII_OBC(n_orb, x, y, z, P, S, site):
+    # Calculates the local CS marker for the specified site
+    # L_x, L_y, L_z: Number of lattice sites in each direction
+    # n_orb : Number of orbitals
+    # n_sites: Number of lattice sites
+    # x, y, z: Vectors with the position of the lattice sites
+    # P : Valence band projector
+    # S: Chiral symmetry operator of the model
+    # site: Number of the site we calculate the marker on
+
+    X, Y, Z = np.repeat(x, n_orb), np.repeat(y, n_orb), np.repeat(z, n_orb)  # Vectors for all x, y, z blocks
+    X = np.reshape(X, (len(X), 1))  # Column vector x
+    Y = np.reshape(Y, (len(Y), 1))  # Column vector y
+    Z = np.reshape(Z, (len(Z), 1))  # Column vector z
+
+
+    PS = P @ S  # We calculate them once so that we don't lose time when calculating the invariant
+    XP = X * P  # We calculate them once so that we don't lose time when calculating the invariant
+    YP = Y * P  # We calculate them once so that we don't lose time when calculating the invariant
+    ZP = Z * P  # We calculate them once so that we don't lose time when calculating the invariant
+
+    # Invariant calculation
+    M = PS @ XP @ YP @ ZP + PS @ ZP @ XP @ YP + PS @ YP @ ZP @ XP - PS @ XP @ ZP @ YP - PS @ ZP @ YP @ XP - PS @ YP @ XP @ ZP  # Invariant operator
+    marker = (8 * pi / 3) * np.imag(np.trace(M[site * n_orb: site * n_orb + n_orb, site * n_orb: site * n_orb + n_orb]))
     return marker
 # %% Graph for the RPS
 def Lattice_graph(L_x, L_y, L_z, n_sites, n_neighbours, x, y, z, matrix_neighbours):
