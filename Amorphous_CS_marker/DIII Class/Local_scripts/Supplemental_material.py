@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from colorbar_functions import hex_to_rgb, rgb_to_dec,get_continuous_cmap #import functions for colormap
 from numpy import pi
-from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, local_marker_DIII_OBC, spectrum
+from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, local_marker_DIII_OBC, spectrum, AmorphousHamiltonian3D_noneigh, local_marker_DIII
 import h5py
 import argparse
 
@@ -21,6 +21,7 @@ start_time = time.time()
 # Parameters of the model
 n_orb = 4                       # Number of orbitals per site
 n_neighbours = 6                # Number of neighbours
+R = 1.4                           # Cutoff scale for the hopping
 width = 0.1                     # Width of the gaussian for the WT model
 density = 1                     # Point density of the RPS model
 M = 0                           # Vector of mass parameters in units of t1
@@ -73,7 +74,9 @@ marker_all = np.zeros((len(sites),))          # Declaration of the local marker
 list_sites, list_x, list_y, list_z, list_marker = [], [], [], [], []
 
 # Hamiltonian
-H_OBC, matrix_neighbours = AmorphousHamiltonian3D_WT(n_sites, n_orb, n_neighbours,L_x, L_y, L_z, x, y, z, M, t1, t2, lamb, "Open")
+
+# H_OBC, matrix_neighbours = AmorphousHamiltonian3D_WT(n_sites, n_orb, n_neighbours,L_x, L_y, L_z, x, y, z, M, t1, t2, lamb, "Open")
+H_OBC = AmorphousHamiltonian3D_noneigh(n_sites, n_orb, R, L_x, L_y, L_z, x, y, z, M, t1, t2, lamb, "Open")
 energy_OBC, eigenstates_OBC, P = spectrum(H_OBC, n_particles)  # Eigenstates and valence band projector
 
 # Local marker calculation
@@ -94,22 +97,23 @@ marker_sites = np.array(list_marker)    # Declaration of the marker average
 av_marker = np.sum(marker_all) / len(sites)
 
 # %% Output data
-with h5py.File('Sup_material_marker.h5', 'w') as f:
+with h5py.File('Sup_material2_marker.h5', 'w') as f:
     f.create_dataset("data", marker_sites.shape, data=marker_sites)
     f["data"].attrs.create("size", data=size)
     f["data"].attrs.create("M", data=M)
     f["data"].attrs.create("width", data=width)
 
-with h5py.File('Sup_material_xaxis.h5', 'w') as f:
+with h5py.File('Sup_material2_xaxis.h5', 'w') as f:
     f.create_dataset("data", scatter_x.shape, data=scatter_x)
 
-with h5py.File('Sup_material_yaxis.h5', 'w') as f:
+with h5py.File('Sup_material2_yaxis.h5', 'w') as f:
     f.create_dataset("data", scatter_y.shape, data=scatter_y)
 
-with h5py.File('Sup_material_avmarker.h5', 'w') as f:
+with h5py.File('Sup_material2_avmarker.h5', 'w') as f:
     f.create_dataset("data", av_marker.shape, data=av_marker)
 
 # %% Main figure
+
 
 font = {'family': 'serif', 'color': 'black', 'weight': 'normal', 'size': 13, }
 plt.rc('text', usetex=True)
@@ -128,9 +132,9 @@ cbar = plt.colorbar(scatters, ax=ax)
 
 ax.set_ylabel("$y$", fontsize=25)
 ax.set_xlabel("$x$", fontsize=25)
-ax.set_xlim(-0.5, size - 0.5)
-ax.set_ylim(-0.5, size - 0.5)
-
+cbar.set_label(label='$\\nu$', size=25, labelpad=-15, y=0.5)
+ax.set_xlim(-0.5, 12 - 0.5)
+ax.set_ylim(-0.5, 12 - 0.5)
 plt.show()
 
 

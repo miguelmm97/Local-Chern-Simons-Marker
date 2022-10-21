@@ -247,6 +247,39 @@ def AmorphousHamiltonian3D_WT(n_sites, n_orb, n_neighbours, L_x, L_y, L_z, x, y,
 
     return Hamiltonian, matrix_neighbours
 
+def AmorphousHamiltonian3D_noneigh(n_sites, n_orb, R, L_x, L_y, L_z, x, y, z, M, t1, t2, lamb, boundary):
+    # Generates the Hamiltonian for a 3D insulator with the parameters specified
+    # t2 = 0  we are in the DIII class (S = - sigma0 x sigma_y), if t2 is non-zero we are in the AII class
+    # n_sites: Number of sites in the RPS
+    # n_orb: Number of orbitals in the model
+    # R: Cutoff scale for the hopping
+    # x: x position of the sites in the RPS
+    # y: y position of the sites in the RPS
+    # z: z position of the sites in the RPS
+    # M, t1, t2, lamb: Parameters of the AII model
+    # Boundary: String with values "Open" or "Closed" which selects the boundary we want
+
+    Hamiltonian = np.zeros((n_orb * n_sites, n_orb * n_sites), complex)  # Declaration of H
+
+    cont = 0
+
+    for index1 in range(0, n_sites):
+        for index2 in range(cont, n_sites):
+
+            row = index1 * n_orb
+            column= index2 * n_orb
+
+            if index1 == index2:
+                row = index1 * n_orb
+                Hamiltonian[row: row + n_orb, row: row + n_orb] = Diagonal(M)  # Diagonal terms
+            else:
+                r, phi, theta = displacement(x[index1], y[index1], z[index1], x[index2], y[index2], z[index2], L_x, L_y, L_z, boundary)
+                if r < R:
+                    Hamiltonian[row: row + n_orb, column: column + n_orb] = RadialHop(r) * AngularHop(theta, phi, t1, t2, lamb)
+                    Hamiltonian[column: column + n_orb, row: row + n_orb] = np.conj(Hamiltonian[row: row + n_orb, column: column + n_orb]).T
+        cont = cont + 1
+    return Hamiltonian
+
 def local_marker_DIII(n_orb, L_x, L_y, L_z, x, y, z, P, S, site):
     
     # Calculates the local CS marker for the specified site
@@ -345,7 +378,6 @@ def local_marker_AII(n_orb, L_x, L_y, L_z, x, y, z, P, Q, R, site):
     marker = marker_AII  # + marker_DIII # Total marker
 
     return marker
-
 
 def local_marker_DIII_OBC(n_orb, x, y, z, P, S, site):
     # Calculates the local CS marker for the specified site
