@@ -14,18 +14,18 @@ import h5py
 from functions import GaussianPointSet_3D, AmorphousHamiltonian3D_WT, local_marker_DIII, spectrum
 
 Ls = [8, 10, 12]  # System sizes
-Rs = np.arange(4)  # Realisations
-width1 = np.linspace(0, 0.2, 50)
-width2 = np.linspace(0.2, 0.3, 25)
-Ws = np.append(width1[:-1], width2)
+Rs = np.arange(10)  # Realisations
+Ws = np.linspace(0, 0.3, 75)
 Ws_string = []
-Ms = [0, 2, 4]
+Ms = [0, 2]
+
 
 
 with open('width_values.txt', 'r') as f:
     for i, line in enumerate(f.readlines()):
         params = line.split()
         Ws_string.append(params[0])
+
 
 local_marker_0 = np.zeros((len(Ms), len(Ws), len(Rs)))
 local_marker_1 = np.zeros((len(Ms), len(Ws), len(Rs)))
@@ -34,11 +34,13 @@ gap_0 = np.zeros((len(Ms), len(Ws), len(Rs)))
 gap_1 = np.zeros((len(Ms), len(Ws), len(Rs)))
 gap_2 = np.zeros((len(Ms), len(Ws), len(Rs)))
 cont = 0
-for file in os.listdir('outdir_width'):
+
+
+for file in os.listdir('outdir_width_better'):
 
     if file.endswith('h5'):
 
-        file_path = os.path.join("outdir_width", file)
+        file_path = os.path.join("outdir_width_better", file)
 
         with h5py.File(file_path, 'r') as f:
 
@@ -50,74 +52,99 @@ for file in os.listdir('outdir_width'):
             width = datanode.attrs['width']
             width_string = '{:.8f}'.format(width)
 
-
-            if size == Ls[0]:
-                m_index, row, col = np.where(Ms == M), Ws_string.index(width_string), R
-                local_marker_0[m_index, row, col] = value[0]
-                gap_0[m_index, row, col] = value[1]
-
-            if size == Ls[1]:
-                m_index, row, col = np.where(Ms == M), Ws_string.index(width_string), R
-                local_marker_1[m_index, row, col] = value[0]
-                gap_1[m_index, row, col] = value[1]
+            #
+            # if size == Ls[0]:
+            #     m_index, row, col = np.where(Ms == M), Ws_string.index(width_string), R
+            #     local_marker_0[m_index, row, col] = value[0]
+            #     gap_0[m_index, row, col] = value[1]
+            #
+            # if size == Ls[1]:
+            #     m_index, row, col = np.where(Ms == M), Ws_string.index(width_string), R
+            #     local_marker_1[m_index, row, col] = value[0]
+            #     gap_1[m_index, row, col] = value[1]
 
 
             if size == Ls[2]:
-                print(R, M, width)
-
-                if R>3:
-                    R=3
-
+               #  if R > 4:
+               #      R = R % 4
                 m_index, row, col = np.where(Ms == M), Ws_string.index(width_string), R
                 local_marker_2[m_index, row, col] = value[0]
-                gap_2[m_index, row, col] = value[1]
 
 
-marker_0 = np.mean(local_marker_0, axis=2)
-marker_1 = np.mean(local_marker_1, axis=2)
-marker_2 = np.mean(local_marker_2, axis=2)
-std_0 = np.std(local_marker_0, axis=2)
-std_1 = np.std(local_marker_1, axis=2)
-std_2 = np.std(local_marker_2, axis=2)
-gap_mean_0 = np.mean(gap_0, axis=2)
-gap_mean_1 = np.mean(gap_1, axis=2)
-gap_mean_2 = np.mean(gap_2, axis=2)
-std_gap_0 = np.std(gap_0, axis=2)
-std_gap_1 = np.std(gap_1, axis=2)
-std_gap_2 = np.std(gap_2, axis=2)
+# for file in os.listdir('outdir_width_extra'):
+#
+#     if file.endswith('h5'):
+#
+#         file_path = os.path.join("outdir_width_extra", file)
+#
+#         with h5py.File(file_path, 'r') as f:
+#
+#             datanode = f['data']
+#             value = datanode[()]
+#             size = datanode.attrs['size']
+#             M = datanode.attrs['M']
+#             R = datanode.attrs['R']
+#             width = datanode.attrs['width']
+#             width_string = '{:.8f}'.format(width)
+#
+#             if size == Ls[2]:
+#                 m_index, row, col = np.where(Ms == M), Ws_string.index(width_string), R + 4
+#                 local_marker_2[m_index, row, col] = value[0]
+
+
+
+# marker_0 = np.mean(local_marker_0, axis=2)
+# marker_1 = np.mean(local_marker_1, axis=2)
+#marker_2 = np.array([np.mean(local_marker_2[0, :, :], axis=1), np.mean(local_marker_2[1, :, 0:4], axis=1)])
+marker_M0 = local_marker_2[0, :, :]
+marker_M2 = local_marker_2[1, :, :]
+marker_mean_M0 = np.mean(marker_M0, axis=1)
+marker_mean_M2 = np.mean(marker_M2, axis=1)
+marker_2 = [[marker_mean_M0],[marker_mean_M2]]
+
+# std_0 = np.std(local_marker_0, axis=2)
+# std_1 = np.std(local_marker_1, axis=2)
+# std_2 = np.std(local_marker_2, axis=2)
+# gap_mean_0 = np.mean(gap_0, axis=2)
+# gap_mean_1 = np.mean(gap_1, axis=2)
+#gap_mean_2 = np.mean(gap_2, axis=2)
+# std_gap_0 = np.std(gap_0, axis=2)
+# std_gap_1 = np.std(gap_1, axis=2)
+# std_gap_2 = np.std(gap_2, axis=2)
 
 
 
 # Output data
-file_name = "Marker_width_8_results.h5"
-with h5py.File(file_name, 'w') as f:
-    f.create_dataset("data", (2, len(Ws)), data=marker_0[0:-1, :])
-
-file_name = "Marker_width_10_results.h5"
-with h5py.File(file_name, 'w') as f:
-    f.create_dataset("data", (2, len(Ws)), data=marker_1[0:-1, :])
-
+# file_name = "Marker_width_8_results.h5"
+# with h5py.File(file_name, 'w') as f:
+#     f.create_dataset("data", (2, len(Ws)), data=marker_0[0:-1, :])
+#
+# file_name = "Marker_width_10_results.h5"
+# with h5py.File(file_name, 'w') as f:
+#     f.create_dataset("data", (2, len(Ws)), data=marker_1[0:-1, :])
+#
 file_name = "Marker_width_12_results.h5"
 with h5py.File(file_name, 'w') as f:
-    f.create_dataset("data", (2, len(Ws)), data=marker_2[0:-1, :])
+    # f.create_dataset("data", (2, len(Ws)), data=marker_2[0:-1, :])
+    f.create_dataset("data", (2, len(Ws)), data=marker_2)
+# file_name = "Marker_width_8_gap_results.h5"
+# with h5py.File(file_name, 'w') as f:
+#     f.create_dataset("data", (2, len(Ws)), data=gap_mean_0[0:-1, :])
+#
+# file_name = "Marker_width_10_gap_results.h5"
+# with h5py.File(file_name, 'w') as f:
+#     f.create_dataset("data", (2, len(Ws)), data=gap_mean_1[0:-1, :])
 
-file_name = "Marker_width_8_gap_results.h5"
-with h5py.File(file_name, 'w') as f:
-    f.create_dataset("data", (2, len(Ws)), data=gap_mean_0[0:-1, :])
-
-file_name = "Marker_width_10_gap_results.h5"
-with h5py.File(file_name, 'w') as f:
-    f.create_dataset("data", (2, len(Ws)), data=gap_mean_1[0:-1, :])
-
-file_name = "Marker_width_12_gap_results.h5"
-with h5py.File(file_name, 'w') as f:
-    f.create_dataset("data", (2, len(Ws)), data=gap_mean_2[0:-1, :])
-
+# file_name = "Marker_width_12_gap_results.h5"
+# with h5py.File(file_name, 'w') as f:
+#     f.create_dataset("data", (2, len(Ws)), data=gap_mean_2[0:-1, :])
+#
 file_name = "Marker_width_Xaxis_results.h5"
 with h5py.File(file_name, 'w') as f:
     f.create_dataset("data", (len(Ws), ), data=Ws)
 
 
+exit(0)
 # %% Plots
 
 # Font format

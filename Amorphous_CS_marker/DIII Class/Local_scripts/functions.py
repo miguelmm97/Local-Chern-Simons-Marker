@@ -247,6 +247,38 @@ def AmorphousHamiltonian3D_WT(n_sites, n_orb, n_neighbours, L_x, L_y, L_z, x, y,
 
     return Hamiltonian, matrix_neighbours
 
+def AmorphousHamiltonian3D_noneigh(n_sites, n_orb, R, L_x, L_y, L_z, x, y, z, M, t1, t2, lamb, boundary):
+    # Generates the Hamiltonian for a 3D insulator with the parameters specified
+    # t2 = 0  we are in the DIII class (S = - sigma0 x sigma_y), if t2 is non-zero we are in the AII class
+    # n_sites: Number of sites in the RPS
+    # n_orb: Number of orbitals in the model
+    # R: Cutoff scale for the hopping
+    # x: x position of the sites in the RPS
+    # y: y position of the sites in the RPS
+    # z: z position of the sites in the RPS
+    # M, t1, t2, lamb: Parameters of the AII model
+    # Boundary: String with values "Open" or "Closed" which selects the boundary we want
+
+    Hamiltonian = np.zeros((n_orb * n_sites, n_orb * n_sites), complex)  # Declaration of H
+
+    cont = 0
+
+    for index1 in range(0, n_sites):
+        for index2 in range(cont, n_sites):
+
+            row = index1 * n_orb
+            column= index2 * n_orb
+
+            if index1 == index2:
+                row = index1 * n_orb
+                Hamiltonian[row: row + n_orb, row: row + n_orb] = Diagonal(M)  # Diagonal terms
+            else:
+                r, phi, theta = displacement(x[index1], y[index1], z[index1], x[index2], y[index2], z[index2], L_x, L_y, L_z, boundary)
+                if r < R:
+                    Hamiltonian[row: row + n_orb, column: column + n_orb] = RadialHop(r) * AngularHop(theta, phi, t1, t2, lamb)
+                    Hamiltonian[column: column + n_orb, row: row + n_orb] = np.conj(Hamiltonian[row: row + n_orb, column: column + n_orb]).T
+        cont = cont + 1
+    return Hamiltonian
 
 def local_marker_DIII(n_orb, L_x, L_y, L_z, x, y, z, P, S, site):
     
@@ -345,6 +377,32 @@ def local_marker_AII(n_orb, L_x, L_y, L_z, x, y, z, P, Q, R, site):
 
     marker = marker_AII  # + marker_DIII # Total marker
 
+    return marker
+
+def local_marker_DIII_OBC(n_orb, x, y, z, P, S, site):
+    # Calculates the local CS marker for the specified site
+    # L_x, L_y, L_z: Number of lattice sites in each direction
+    # n_orb : Number of orbitals
+    # n_sites: Number of lattice sites
+    # x, y, z: Vectors with the position of the lattice sites
+    # P : Valence band projector
+    # S: Chiral symmetry operator of the model
+    # site: Number of the site we calculate the marker on
+
+    X, Y, Z = np.repeat(x, n_orb), np.repeat(y, n_orb), np.repeat(z, n_orb)  # Vectors for all x, y, z blocks
+    X = np.reshape(X, (len(X), 1))  # Column vector x
+    Y = np.reshape(Y, (len(Y), 1))  # Column vector y
+    Z = np.reshape(Z, (len(Z), 1))  # Column vector z
+
+
+    PS = P @ S  # We calculate them once so that we don't lose time when calculating the invariant
+    XP = X * P  # We calculate them once so that we don't lose time when calculating the invariant
+    YP = Y * P  # We calculate them once so that we don't lose time when calculating the invariant
+    ZP = Z * P  # We calculate them once so that we don't lose time when calculating the invariant
+
+    # Invariant calculation
+    M = PS @ XP @ YP @ ZP + PS @ ZP @ XP @ YP + PS @ YP @ ZP @ XP - PS @ XP @ ZP @ YP - PS @ ZP @ YP @ XP - PS @ YP @ XP @ ZP  # Invariant operator
+    marker = (8 * pi / 3) * np.imag(np.trace(M[site * n_orb: site * n_orb + n_orb, site * n_orb: site * n_orb + n_orb]))
     return marker
 # %% Graph for the RPS
 def Lattice_graph(L_x, L_y, L_z, n_sites, n_neighbours, x, y, z, matrix_neighbours):

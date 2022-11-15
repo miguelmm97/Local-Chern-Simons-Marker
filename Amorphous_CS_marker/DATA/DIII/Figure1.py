@@ -40,7 +40,7 @@ for file in os.listdir(outdir):
             marker_width_10_M0 = datanode[0, :]
             marker_width_10_M2 = datanode[1, :]
 
-    if file == "Marker_width_12_results.h5":
+    if file == "Marker_width_12_results_new.h5":
         with h5py.File(file, 'r') as f:
             datanode = f['data']
             marker_width_12_M0 = datanode[0, :]
@@ -69,10 +69,15 @@ for file in os.listdir(outdir):
             datanode = f['data']
             Marker_M_xaxis = datanode[:]
 
-    if file == "Marker_width_Xaxis_results.h5":
+    if file == "Marker_width_Xaxis_results_new.h5":
         with h5py.File(file, 'r') as f:
             datanode = f['data']
             Marker_width_xaxis = datanode[:]
+            
+    if file == "Marker_width_Xaxis_results.h5":
+        with h5py.File(file, 'r') as f:
+            datanode = f['data']
+            Marker_width_xaxis_gap = datanode[:]
 
     if file == "Phase_diagram_mesh_x.h5":
         with h5py.File(file, 'r') as f:
@@ -163,10 +168,10 @@ ax1.xaxis.set_minor_locator(ticker.FixedLocator(minorsx))
 right_ax = ax1.twinx()
 # right_ax.plot(Marker_width_xaxis, gap_width_8_M0, color=axcolour[1], linestyle=axmarkers[0], linewidth=2)
 # right_ax.plot(Marker_width_xaxis, gap_width_10_M0, color=axcolour[1], linestyle=axmarkers[1], linewidth=2)
-right_ax.plot(Marker_width_xaxis, gap_width_12_M0, color=axcolour[0], linestyle=axmarkers[0], linewidth=2, label='$ \Delta $')
+right_ax.plot(Marker_width_xaxis_gap, gap_width_12_M0, color=axcolour[0], linestyle=axmarkers[0], linewidth=2, label='$ \Delta $')
 # right_ax.plot(Marker_width_xaxis, gap_width_8_M2, color=axcolour[1], linestyle=axmarkers[0], linewidth=2)
 # right_ax.plot(Marker_width_xaxis, gap_width_10_M2, color=axcolour[1], linestyle=axmarkers[1], linewidth=2)
-right_ax.plot(Marker_width_xaxis, gap_width_12_M2, color=axcolour[1], linestyle=axmarkers[0], linewidth=2, label='$ \Delta $')
+right_ax.plot(Marker_width_xaxis_gap, gap_width_12_M2, color=axcolour[1], linestyle=axmarkers[0], linewidth=2, label='$ \Delta $')
 right_ax.set_ylabel("$\Delta$", fontsize=35)
 right_ax.set_ylim(-0.1, 2)
 
